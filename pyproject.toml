@@ -1,0 +1,32 @@
+[project]
+name = "dimehead-configurator"
+version = "0.1.0"
+description = "GUI & CLI tools for Dimehead NAM Player .npb bank management"
+authors = [ { name = "Your Name", email = "you@example.com" } ]
+license = { file = "LICENSE" }
+requires-python = ">=3.10"
+readme = "README.md"
+keywords = ["audio", "NAM", "guitar", "config", "qt", "pyside6"]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+  "Topic :: Multimedia :: Sound/Audio",
+  "Topic :: Utilities"
+]
+
+dependencies = [
+  "pyside6>=6.6.0",
+  "platformdirs>=3.0.0"
+]
+
+[project.optional-dependencies]
+dev = ["pyqtgraph>=0.13.0", "jsonschema>=4.0.0", "rich>=13.0.0"]
+
+[project.scripts]
+nam-config = "nam_config_tool:main"
+dimehead-configurator = "dimehead_gui.main:run"
+
+[build-system]
+requires = ["setuptools>=65", "wheel"]
+build-backend = "setuptools.build_meta"
