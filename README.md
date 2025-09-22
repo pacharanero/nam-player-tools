@@ -31,38 +31,18 @@ Open a `.npb` file via 'Open Bank' button in the toolbar.
 ### Current NAM Player Manager GUI Capabilities
 
 - Open & parse bank (`.npb`)
-- Display presets in a table (index + name)
-- Inline rename (editable Name column)
-- Reorder presets (Move Up / Move Down)
-- Drag & drop preset reordering
+- Display presets in a table
+- Rename presets inline
+- Reorder presets - drag & drop preset reordering
 - Global settings panel (brightness, line out, MIDI, footswitch, etc.)
-- LED color column with picker (hex + swatch)
+- LED color column with color picker
 - Dirty tracking (save buttons enable only when changes exist)
 - Versioned save (auto `_vNNN` numbering)
 - In‑place overwrite (confirmation + existing backup respect)
 
-### Coming Soon
+## NAM Player Backup File Format
 
-- Full preset parameter editing (gain / tone / boost / ambience / gate)
-- Undo / redo (QUndoStack)
-- Drag & drop preset reordering + asset import (.nam / .ir)
-- Diff panel (original vs edited)
-- Validation (frequency & range checks)
-- Bulk operations (copy EQ, normalize loudness)
-- JSON schema + validate command
-- Preset extraction / cloning / multi‑select edits
-
-Progress is incremental—expect frequent small improvements instead of a big monolith release.
-
-## Format Details?
-
-They're now housed in [`FORMAT_SPEC.md`](FORMAT_SPEC.md) to keep this README focused on usage. That document covers:
-
-- Archive layout & member roles
-- Full observed `config.json` schema
-- Field semantics & inferences
-- Risks / unknowns / validation suggestions
-- Change & diff considerations
+Details are in [`FORMAT_SPEC.md`](FORMAT_SPEC.md) to keep this README focused on usage.
 
 ## CLI Tool: `nam_config_tool.py`
 
@@ -201,17 +181,17 @@ For deeper reverse‑engineering notes, see `FORMAT_SPEC.md`.
 - Bulk ops & loudness normalize
 - Preset extract / clone / multi-select
 - Visualization (EQ curves, meters)
-- Plugin / extension hooks
 - Add bulk actions - multi select
-- Compile to binary or executable
-- Running on other platforms
+- Compile to binary or executable & check it can run on other platforms
+- Light mode/Dark mode switch
+-
 
 ## Firmware archive
 
 For no reason other than future reference, I have also archived the firmware downloads from Dimehead's site https://www.dimehead.de/firmware/
 
 These are in the [firmware_archive/](firmware_archive/) directory.
-  
+
 ## Contributing
 
 PRs welcome—small, focused improvements preferred (one feature or refactor at a time). For format discoveries, update `FORMAT_SPEC.md` and reference captured evidence (hashes / sample snippets) if possible.

@@ -2,7 +2,7 @@ from __future__ import annotations
 import sys
 from pathlib import Path
 from PySide6.QtWidgets import (
-    QApplication, QMainWindow, QFileDialog, QMessageBox, QTableView, QStatusBar, QToolBar, QSplitter, QWidget, QColorDialog, QHeaderView, QStyledItemDelegate, QStyleOptionButton
+    QApplication, QMainWindow, QFileDialog, QMessageBox, QTableView, QStatusBar, QToolBar, QSplitter, QWidget, QColorDialog, QHeaderView, QStyledItemDelegate, QStyleOptionButton, QDialog
 )
 from PySide6.QtCore import QEvent
 from PySide6.QtGui import QAction, QColor
@@ -262,7 +262,7 @@ class MainWindow(QMainWindow):
             return
         preset = presets[row]
         dlg = PresetEditDialog(preset, self)
-        if dlg.exec() == dlg.Accepted:
+        if dlg.exec() == QDialog.Accepted:
             updated = dlg.get_result()
             presets[row].update(updated)
             idx0 = self.model.index(row, 0)
