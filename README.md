@@ -197,7 +197,7 @@ For deeper reverse‑engineering notes, see `FORMAT_SPEC.md`.
 - LED color picker
 - Undo/redo & diff visualization
 - Validation & schema file
-- Drag & drop asset import (.nam / .ir) (preset reorder already implemented)
+- Drag & drop asset import (.nam / .ir)
 - Bulk ops & loudness normalize
 - Preset extract / clone / multi-select
 - Visualization (EQ curves, meters)
@@ -210,7 +210,7 @@ For deeper reverse‑engineering notes, see `FORMAT_SPEC.md`.
 
 For no reason other than future reference, I have also archived the firmware downloads from Dimehead's site https://www.dimehead.de/firmware/
 
-These are in the firmware_archive/ directory.
+These are in the [firmware_archive/](firmware_archive/) directory.
   
 ## Contributing
 
