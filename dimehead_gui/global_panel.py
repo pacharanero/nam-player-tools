@@ -4,18 +4,17 @@ from PySide6.QtWidgets import (
 )
 from PySide6.QtCore import Signal, Qt
 
-# Keys we expose and their widget types / ranges
-# (Inferred ranges; adjust as more empirical data appears.)
+# Keys we expose, their widget types/ranges, and NAM Player GUI labels
 _GLOBAL_SPECS = {
-    "lcdBrightness": {"type": "int", "min": 0, "max": 10, "step": 1},
-    "ledBrightness": {"type": "int", "min": 0, "max": 10, "step": 1},
-    "lineoutVolume": {"type": "float", "min": 0.0, "max": 1.0, "step": 0.01, "decimals": 2},
-    "lineoutPosition": {"type": "int", "min": 0, "max": 5, "step": 1},
-    "midiChannelIndex": {"type": "int", "min": 0, "max": 15, "step": 1},  # 0-based (0..15) typical
-    "footswitchModeIndex": {"type": "int", "min": 0, "max": 10, "step": 1},
-    "footswitchLongpress": {"type": "int", "min": 0, "max": 5000, "step": 100},  # ms? guess
-    "enableRotateBack": {"type": "bool"},
-    "enableStagemodeEncoder": {"type": "bool"},
+    "lcdBrightness": {"type": "int", "min": 0, "max": 10, "step": 1, "label": "LCD Brightness"},
+    "ledBrightness": {"type": "int", "min": 0, "max": 10, "step": 1, "label": "LED Brightness"},
+    "lineoutVolume": {"type": "float", "min": 0.0, "max": 1.0, "step": 0.01, "decimals": 2, "label": "Lineout Master Volume"},
+    "lineoutPosition": {"type": "int", "min": 0, "max": 5, "step": 1, "label": "Lineout/FX tap after ..."},
+    "midiChannelIndex": {"type": "int", "min": 0, "max": 15, "step": 1, "label": "MIDI Channel"},
+    "footswitchModeIndex": {"type": "int", "min": 0, "max": 10, "step": 1, "label": "Footswitch Mode"},
+    "footswitchLongpress": {"type": "int", "min": 0, "max": 5000, "step": 100, "label": "Footswitch Long Press Mode"},
+    "enableRotateBack": {"type": "bool", "label": "Press-Rotate-Release to Close"},
+    "enableStagemodeEncoder": {"type": "bool", "label": "Enable Encoder in Stage Mode"},
 }
 
 class GlobalSettingsPanel(QWidget):
@@ -35,7 +34,7 @@ class GlobalSettingsPanel(QWidget):
         for key, spec in _GLOBAL_SPECS.items():
             w = self._create_widget_for_spec(key, spec)
             self._widgets[key] = w
-            label = key
+            label = spec.get("label", key)
             form.addRow(label, w)
 
         # Display-only configVersion

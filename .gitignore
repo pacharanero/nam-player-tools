@@ -216,5 +216,8 @@ __marimo__/
 .streamlit/secrets.toml
 
 
-# Dimehead NAM Player backup/bank files
+# Ignore Dimehead NAM Player backup/bank files
 *.npb
+
+# Don't ignore the factory default .npb file
+!namplayer-factory-defaults.npb

@@ -178,11 +178,9 @@ Two save actions are provided once edits are made (e.g. renaming a preset):
 Both actions are disabled until the session is marked dirty (after an edit). On successful save the dirty flag clears and buttons disable again.
 For deeper reverse‑engineering notes, see `FORMAT_SPEC.md`.
 
-## Feature Matrix
+## Features
 
-Implemented (today):
-
-- Load & parse `.npb` banks
+- Load & parse `.npb` backup file
 - Preset table (index + name)
 - Rename presets inline
 - Reorder presets (move up/down buttons)
@@ -193,7 +191,7 @@ Implemented (today):
 - Versioned save (`_vNNN`) + overwrite with confirm
 - CLI JSON pointer get/set/export/update with backup
 
-Planned (not yet merged):
+## Future development ideas
 
 - Parameter editing (knobs, filters, ambience, boost)
 - LED color picker
@@ -204,6 +202,9 @@ Planned (not yet merged):
 - Preset extract / clone / multi-select
 - Visualization (EQ curves, meters)
 - Plugin / extension hooks
+- Add bulk actions - multi select
+- Compile to binary or executable
+- Running on other platforms
 
 ## Firmware archive
 

@@ -2,16 +2,39 @@ from __future__ import annotations
 import sys
 from pathlib import Path
 from PySide6.QtWidgets import (
-    QApplication, QMainWindow, QFileDialog, QMessageBox, QTableView, QStatusBar, QToolBar, QSplitter, QWidget, QColorDialog
+    QApplication, QMainWindow, QFileDialog, QMessageBox, QTableView, QStatusBar, QToolBar, QSplitter, QWidget, QColorDialog, QHeaderView, QStyledItemDelegate, QStyleOptionButton
 )
+from PySide6.QtCore import QEvent
 from PySide6.QtGui import QAction, QColor
 from PySide6.QtCore import Qt, QAbstractTableModel, QModelIndex, Signal
 
 import dimehead_bank as db
 from .global_panel import GlobalSettingsPanel
+from .preset_edit_dialog import PresetEditDialog
+class EditButtonDelegate(QStyledItemDelegate):
+    def paint(self, painter, option, index):
+        from PySide6.QtWidgets import QStyle
+        if index.column() == 7:
+            btn_opt = QStyleOptionButton()
+            btn_opt.rect = option.rect
+            btn_opt.text = "Edit"
+            btn_opt.state = QStyle.State_Enabled
+            QApplication.style().drawControl(QStyle.CE_PushButton, btn_opt, painter)
+        else:
+            super().paint(painter, option, index)
+
+    def editorEvent(self, event, model, option, index):
+        if index.column() == 7 and event.type() == QEvent.MouseButtonRelease:
+            # Call the main window's edit method
+            table = option.widget
+            mw = table.window()
+            if hasattr(mw, '_edit_preset'):
+                mw._edit_preset(index.row())
+            return True
+        return super().editorEvent(event, model, option, index)
 
 class PresetTableModel(QAbstractTableModel):
-    HEADERS = ["#", "Name", "Model (nam)", "IR", "Gain", "VolNorm", "LED"]
+    HEADERS = ["#", "Name", "Model (nam)", "IR", "Gain", "VolNorm", "LED", "Edit"]
     dirtyChanged = Signal(bool)
 
     def __init__(self, bank: db.Bank | None = None):
@@ -26,6 +49,13 @@ class PresetTableModel(QAbstractTableModel):
     # Basic model implementation
     def rowCount(self, parent=QModelIndex()):
         if not self.bank: return 0
+        """
+        NAM Player Manager GUI main module
+
+        This file contains the main window, preset table model, and application entry point for the NAM Player Manager GUI.
+        It provides a table-based editor for .npb preset banks, with drag-and-drop, inline editing, and global settings panel.
+        """
+
         return len(self.bank.config.get('presets', []))
 
     def columnCount(self, parent=QModelIndex()):
@@ -38,6 +68,9 @@ class PresetTableModel(QAbstractTableModel):
 
     def data(self, index: QModelIndex, role=Qt.DisplayRole):
         if not index.isValid() or not self.bank:
+        # ----------------------
+        # Preset Table Model
+        # ----------------------
             return None
         presets = self.bank.config.get('presets', [])
         if index.row() >= len(presets):
@@ -63,6 +96,10 @@ class PresetTableModel(QAbstractTableModel):
                 if isinstance(val, int):
                     return f"#{val:06X}"
                 return ''
+            if col == 7:
+                return "Edit"
+        if role == Qt.EditRole and col == 1:
+            return preset.get('name', '')
         if role == Qt.BackgroundRole and col == 6:
             val = preset.get('ledColor')
             if isinstance(val, int):
@@ -81,6 +118,8 @@ class PresetTableModel(QAbstractTableModel):
             base |= Qt.ItemIsEditable
         if index.column() == 0:
             base |= Qt.ItemIsDropEnabled
+        if index.column() == 7:
+            base |= Qt.ItemIsEnabled
         return base
 
     def setData(self, index: QModelIndex, value, role=Qt.EditRole):
@@ -172,6 +211,7 @@ class PresetTableModel(QAbstractTableModel):
         return False
 
 class MainWindow(QMainWindow):
+    # Main application window: contains the preset table and global settings panel
     def __init__(self):
         super().__init__()
         self.setWindowTitle("NAM Player Manager")
@@ -203,6 +243,34 @@ class MainWindow(QMainWindow):
         self._create_actions()
         self.setStatusBar(QStatusBar())
 
+        # Set fixed column widths for the preset table
+        header = self.table.horizontalHeader()
+        column_widths = [40, 180, 120, 100, 70, 60, 60, 60]  # Add width for Edit button
+        for i, w in enumerate(column_widths):
+            header.setSectionResizeMode(i, QHeaderView.Fixed)
+            self.table.setColumnWidth(i, w)
+
+        # Set custom delegate for Edit button column
+        self.table.setItemDelegateForColumn(7, EditButtonDelegate(self.table))
+
+    def _edit_preset(self, row):
+        # Open the edit dialog for the given row
+        if not self.model.bank:
+            return
+        presets = self.model.bank.config.get('presets', [])
+        if row < 0 or row >= len(presets):
+            return
+        preset = presets[row]
+        dlg = PresetEditDialog(preset, self)
+        if dlg.exec() == dlg.Accepted:
+            updated = dlg.get_result()
+            presets[row].update(updated)
+            idx0 = self.model.index(row, 0)
+            idxN = self.model.index(row, self.model.columnCount() - 1)
+            self.model.dataChanged.emit(idx0, idxN)
+            self.notify_dirty(True)
+
+    # ... (rest of MainWindow methods: file open/save, dirty tracking, etc.)
     def _create_actions(self):
         tb = QToolBar("Main")
         self.addToolBar(tb)
